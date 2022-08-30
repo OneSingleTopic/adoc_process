@@ -1,0 +1,20 @@
+= First test - Should be a h1
+
+This document represent the first integration test for adoc_process. 
+Should be a <p> in a <div> containing the two lines. 
+
+== Should be a h2
+
+.Custom block
+[custom_class]
+--
+Second paragraph. 
+Should be a <p> in a <div> with the class custom_class and the id custom_block containing the two lines.
+
+Third paragraph
+This line should be in another <p> withing the same block
+--
+
+Fourth paragraph. 
+Should be a <p> in a <div> with the class custom_class and the id custom_block containing the two lines. 
+The div should be different from the last one.
