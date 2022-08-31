@@ -1,11 +1,8 @@
+use parser::{DocumentParser, GlobalDocumentParser};
 use std::error::Error;
 use std::fs;
 
-pub enum AdocObject {
-    Paragraph(String),
-    Title(String, usize),
-}
-
+pub mod parser;
 pub struct Config {
     src_filename: String,
 }
@@ -22,32 +19,12 @@ impl Config {
 pub fn run(config: Config) -> Result<(), Box<dyn Error>> {
     let contents: String = fs::read_to_string(config.src_filename)?;
 
+    let mut parser: Option<Box<dyn DocumentParser>> =
+        Some(Box::new(GlobalDocumentParser::new(vec![])));
     for line in contents.lines() {
-        let mut vector = line.split(" ");
-        if let Some(first_element) = vector.next() {
-            if first_element.contains("=") {
-                let mut title_level = 0;
-                let mut title_indicator = first_element.chars();
-                while let Some('=') = title_indicator.next() {
-                    title_level += 1;
-                }
-
-                println!(
-                    "Title level {} : {}",
-                    title_level,
-                    vector.collect::<Vec<&str>>().join(" ")
-                );
-            } else {
-                println!(
-                    "{} {}",
-                    first_element,
-                    vector.collect::<Vec<&str>>().join(" ")
-                );
-            }
-        } else {
-            println!("{}", line);
-        }
+        parser = Some(parser.take().unwrap().run_line(line));
     }
 
+    parser.unwrap().to_html();
     Ok(())
 }
